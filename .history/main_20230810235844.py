@@ -1,0 +1,41 @@
+from datetime import datetime
+import speech_recognition as srec
+import pyttsx3
+import webbrowser
+import wikipedia
+import wolframalpha
+
+
+#text to speech engine
+engine_srec = pyttsx3.init()
+voices = engine_srec.getProperty('vocies')  #library of voices you can use for AI assistant
+engine_srec.setProperty('vocie', voices[1].id) #[1] female [0] male
+trigger_phrase = 'computer' #word to activate assistant
+
+def speak(text, rate=120):  
+    engine_srec.setProperty('rate', rate)
+    engine_srec.say(text)
+    engine_srec.runAndWait()
+    #method leverages text to speech 
+
+
+#listen to commands
+def parseCommand():
+    listener = srec.Recognizer() # parse the voice to text
+    print('Listening for commands')
+
+    with srec.Microphone() as source:
+        listener.pause_threshold = 2 #length of pause while speaking
+        input_speech=listener.listen(source)
+
+    try:
+        print('Recognizing speech')
+        query = listener.recognize_whisper(input_speech, language ='en_gb') #whisper api to convert to text
+        print(f'Recognized input speech was {query} ')
+    except Exception as exp:
+        print('Sorry I cannot recognize this, could you repeat?')
+        speak('Sorry I cannot recognize this, could you repeat?')
+
+        print(exp)
+        return 'None'
+    return query
