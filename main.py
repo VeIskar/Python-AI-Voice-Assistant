@@ -39,3 +39,29 @@ def parseCommand():
         print(exp)
         return 'None'
     return query
+
+#parser
+#main loop
+
+if __name__ == '__main__':
+    speak('Awaiting instructions', 120)
+
+    #commands listening loop
+    while True:
+        #parse as list
+        query = parseCommand.lower().split()
+
+        if query[0] == trigger_phrase:
+            query.pop(0)
+
+            #commands
+            if query[0] == 'say':
+
+                if 'hello' in query:
+                    speak('Greetings everyone.')
+                else:
+                    query.pop(0) #remove say
+                    speech =' '.join(query)
+
+                    speak(speech)
+
