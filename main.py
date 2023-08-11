@@ -4,7 +4,7 @@ import pyttsx3
 import webbrowser
 import wikipedia
 import wolframalpha
-
+import webbrowser
 
 #text to speech engine
 engine_srec = pyttsx3.init()
@@ -44,7 +44,7 @@ def parseCommand():
 #main loop
 
 if __name__ == '__main__':
-    speak('Awaiting instructions', 120)
+    speak('Awaiting instructions')
 
     #commands listening loop
     while True:
@@ -64,4 +64,13 @@ if __name__ == '__main__':
                     speech =' '.join(query)
 
                     speak(speech)
+            
+            #navigation
+            if query[0] == 'go' and query[1]=='to':     
+                speak('Opening: ')          
+                query = ' '.join(query[2:])
+                #webbrowser.open_new(query) #opening page for query
+
+                webbrowser.open_new(query)
+               
 
