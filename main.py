@@ -12,6 +12,10 @@ voices = engine_srec.getProperty('vocies')  #library of voices you can use for A
 engine_srec.setProperty('vocie', voices[1].id) #[1] female [0] male
 trigger_phrase = 'computer' #word to activate assistant
 
+#browsers
+browsers__=['chrome', 'firefox','edge']
+
+
 def speak(text, rate=120):  
     engine_srec.setProperty('rate', rate)
     engine_srec.say(text)
@@ -40,6 +44,21 @@ def parseCommand():
         return 'None'
     return query
 
+def browser_conf_open(query_, browser):
+    if browser not in browsers__:
+        speak('Browser not supported, please choose other')
+        return
+    
+    speak(f'Opening in {browser} browser')
+
+    if browser== 'chrome':
+        webbrowser.get('chrome').open_new(query_)    
+    elif browser=='firefox':
+        webbrowser.get('firefox').open_new(query_)
+    elif browser=='edge':
+        webbrowser.get('edge').open_new(query_)
+
+
 #parser
 #main loop
 
@@ -67,10 +86,18 @@ if __name__ == '__main__':
             
             #navigation
             if query[0] == 'go' and query[1]=='to':     
-                speak('Opening: ')          
+                
+                #speak('Opening: ') prev
+                   
                 query = ' '.join(query[2:])
-                #webbrowser.open_new(query) #opening page for query
+                
+                speak("In which browser you would like to open? Available browsers are: " + ', '.join(browsers__))
 
-                webbrowser.open_new(query)
+                selected_br = input().strip().lower()
+
+                browser_conf_open(query, selected_br)
+
+
+                #webbrowser.open_new(query) #opening page for query #prev
                
 
