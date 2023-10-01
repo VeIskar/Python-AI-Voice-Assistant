@@ -34,7 +34,7 @@ def parseCommand():
 
     try:
         print('Recognizing speech')
-        query = listener.recognize_google(input_speech, language ='en_gb') #whisper api to convert to text
+        query = listener.recognize_whisper(input_speech, language ='en_gb') #whisper api to convert to text
         print(f'Recognized input speech was {query} ')
     except Exception as exp:
         print('Sorry I cannot recognize this, could you repeat?')
@@ -57,25 +57,6 @@ def browser_conf_open(query_, browser):
         webbrowser.get('firefox').open_new(query_)
     elif browser=='edge':
         webbrowser.get('edge').open_new(query_)
-
-
-#browser parsing
-def parse_browser():
-    listener = srec.Recognizer() # parse the voice to text
-    print('Listening for browser choice')
-
-    with srec.Microphone() as source:
-        listener.pause_threshold = 2
-
-    try:
-        input_speech = listener.listen(source)
-        browser_selected = listener.recognize_google(input_speech)
-        print(f'You decided to choose {browser_selected} as browser.')
-        return browser_selected
-
-    except srec.UnknownValueError:
-        print('Could you please repeat')
-        return None
 
 
 #parser
@@ -112,12 +93,9 @@ if __name__ == '__main__':
                 
                 speak("In which browser you would like to open? Available browsers are: " + ', '.join(browsers__))
 
-                selected_br = parse_browser()
+                selected_br = input().strip().lower()
 
-                if selected_br:
-                    browser_conf_open(query, selected_br)
-                else:
-                    speak("Sorry I couldn't recognize your voice. Please try again")
+                browser_conf_open(query, selected_br)
 
 
                 #webbrowser.open_new(query) #opening page for query #prev
