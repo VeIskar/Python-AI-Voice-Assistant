@@ -8,8 +8,8 @@ import webbrowser
 
 #text to speech engine
 engine_srec = pyttsx3.init()
-voices = engine_srec.getProperty('vocies')  #library of voices you can use for AI assistant
-engine_srec.setProperty('vocie', voices[1].id) #[1] female [0] male
+voices = engine_srec.getProperty('voices')  #library of voices you can use for AI assistant
+engine_srec.setProperty('voice', voices[1].id) #[1] female [0] male
 trigger_phrase = 'computer' #word to activate assistant
 
 #browsers
@@ -60,23 +60,24 @@ def browser_conf_open(query_, browser):
 
 
 #browser parsing
-def parse_browser():
+def parseBrowser():
     listener = srec.Recognizer() # parse the voice to text
-    print('Listening for browser choice')
-
-    with srec.Microphone() as source:
-        listener.pause_threshold = 2
+    #speak('Listening for browser choice')
 
     try:
-        input_speech = listener.listen(source)
-        browser_selected = listener.recognize_google(input_speech)
-        print(f'You decided to choose {browser_selected} as browser.')
+        with srec.Microphone() as source:
+            listener.pause_threshold = 2
+            speak('Listening for browser choice')
+            audio = listener.listen(source)
+        
+        #speech recognition
+        browser_selected = listener.recognize_google(audio)
+        speak(f'You decided to choose {browser_selected} as the browser.')
         return browser_selected
-
+    
     except srec.UnknownValueError:
-        print('Could you please repeat')
-        return None
-
+            print('Could you please repeat')
+            return None
 
 #parser
 #main loop
@@ -87,7 +88,7 @@ if __name__ == '__main__':
     #commands listening loop
     while True:
         #parse as list
-        query = parseCommand.lower().split()
+        query = parseCommand().lower().split()
 
         if query[0] == trigger_phrase:
             query.pop(0)
@@ -112,7 +113,7 @@ if __name__ == '__main__':
                 
                 speak("In which browser you would like to open? Available browsers are: " + ', '.join(browsers__))
 
-                selected_br = parse_browser()
+                selected_br = parseBrowser()
 
                 if selected_br:
                     browser_conf_open(query, selected_br)
