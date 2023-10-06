@@ -4,7 +4,6 @@ import pyttsx3
 import webbrowser
 import wikipedia
 import wolframalpha
-import webbrowser
 
 #text to speech engine
 engine_srec = pyttsx3.init()
@@ -45,11 +44,8 @@ def parseCommand():
     return query
 
 def browser_conf_open(query_, browser):
-    if browser not in browsers__:
-        speak('Browser not supported, please choose other')
-        return
     
-    speak(f'Opening in {browser} browser')
+    speak(f'Going to {query} in {browser} browser')
 
     if browser== 'chrome':
         webbrowser.get('chrome').open_new(query_)    
@@ -57,6 +53,8 @@ def browser_conf_open(query_, browser):
         webbrowser.get('firefox').open_new(query_)
     elif browser=='edge':
         webbrowser.get('edge').open_new(query_)
+    # elif browser not in browsers__:
+    #     speak('Browser not supported, please choose other')
 
 
 #browser parsing
@@ -72,8 +70,15 @@ def parseBrowser():
         
         #speech recognition
         browser_selected = listener.recognize_google(audio)
-        speak(f'You decided to choose {browser_selected} as the browser.')
-        return browser_selected
+
+        if browser_selected in browsers__:
+            speak(f'You decided to choose {browser_selected} as the browser.')
+            print(f'selected browser accepted {browser_selected}')
+            return browser_selected
+        else:
+            speak('Browser not supported, please choose other')
+            print(f'Browser {browser_selected} not supported/recognized')
+            return None
     
     except srec.UnknownValueError:
             print('Could you please repeat')
@@ -98,6 +103,7 @@ if __name__ == '__main__':
 
                 if 'hello' in query:
                     speak('Greetings everyone.')
+                    print('greeitngs sequence')
                 else:
                     query.pop(0) #remove say
                     speech =' '.join(query)
@@ -105,19 +111,23 @@ if __name__ == '__main__':
                     speak(speech)
             
             #navigation
-            if query[0] == 'go' and query[1]=='to':     
+            if query[0]=='select' and query[1]=='browser':     
                 
                 #speak('Opening: ') prev
-                   
-                query = ' '.join(query[2:])
-                
+                                
                 speak("In which browser you would like to open? Available browsers are: " + ', '.join(browsers__))
 
                 selected_br = parseBrowser()
 
-                if selected_br:
-                    browser_conf_open(query, selected_br)
-                else:
+                if selected_br :
+                    speak('Please say "computer go to" followed by the website you want to visit to activate.')
+
+            elif selected_br is not None and query[0] == 'go' and query[1]=='to' :        
+                query = ' '.join(query[2:]) #we will skip the 'go to'
+                browser_conf_open(query,selected_br)
+                    
+                    
+            else:
                     speak("Sorry I couldn't recognize your voice. Please try again")
 
 
