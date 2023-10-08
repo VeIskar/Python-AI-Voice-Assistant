@@ -45,16 +45,15 @@ def parseCommand():
 
 def browser_conf_open(query_, browser):
     
-    speak(f'Going to {query} in {browser} browser')
+    speak(f'Going to {query_} in {browser} browser')
 
     if browser== 'chrome':
         webbrowser.get('chrome').open_new(query_)    
     elif browser=='firefox':
-        webbrowser.get('firefox').open_new(query_)
+        webbrowser.get('mozilla').open_new(query_)
     elif browser=='edge':
         webbrowser.get('edge').open_new(query_)
-    # elif browser not in browsers__:
-    #     speak('Browser not supported, please choose other')
+
 
 
 #browser parsing
@@ -69,7 +68,7 @@ def parseBrowser():
             audio = listener.listen(source)
         
         #speech recognition
-        browser_selected = listener.recognize_google(audio)
+        browser_selected = listener.recognize_google(audio).lower() # add .lower at the end 
 
         if browser_selected in browsers__:
             speak(f'You decided to choose {browser_selected} as the browser.')
@@ -125,6 +124,8 @@ if __name__ == '__main__':
             elif selected_br is not None and query[0] == 'go' and query[1]=='to' :        
                 query = ' '.join(query[2:]) #we will skip the 'go to'
                 browser_conf_open(query,selected_br)
+            elif selected_br is None:
+                speak("Please select browser first")
                     
                     
             else:
@@ -133,4 +134,3 @@ if __name__ == '__main__':
 
                 #webbrowser.open_new(query) #opening page for query #prev
                
-
