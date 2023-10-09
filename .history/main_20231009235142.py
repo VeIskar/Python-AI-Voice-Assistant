@@ -49,12 +49,12 @@ def browser_conf_open(query_, browser):
     
     speak(f'Going to {query_} in {browser} browser')
 
-    if browser == 'chrome':
+    if browser== 'chrome':
         webbrowser.get('chrome').open_new(query_)    
-    elif browser =='firefox':
-        webbrowser.get('firefox').open_new(query_)
-    elif browser =='edge':
-        webbrowser.get('msedge').open_new(query_)
+    elif browser=='firefox':
+        webbrowser.get('mozilla').open_new(query_)
+    elif browser=='edge':
+        webbrowser.get('edge').open_new(query_)
 
 
 
@@ -111,9 +111,6 @@ if __name__ == '__main__':
 
                     speak(speech)
             
-            #empty browser
-            selected_br = None
-            
             #navigation
             if query[0]=='select' and query[1]=='browser':     
                 
@@ -126,20 +123,12 @@ if __name__ == '__main__':
                 if selected_br :
                     speak('Please say "computer go to" followed by the website you want to visit to activate.')
 
-            elif selected_br is not None and query[0] == 'go' and query[1]=='to' :
+            elif selected_br is not None and query[0] == 'go' and query[1]=='to' :        
                 query = ' '.join(query[2:]) #we will skip the 'go to'
                 browser_conf_open(query,selected_br)
-
             elif selected_br is None:
-                speak("Please select browser first or ask for auto navigate function") 
-
-                if query[0] == 'auto' and query[1] == 'navigate' and query[2] == 'to' : #auxiliary website navigation function 
+                speak("Please select browser first")
                     
-                    query = ' '.join(query[3:])
-                    speak(f'Going to {query} in auto web mode')
-                    webbrowser.open_new(query)
-                    print('opening in emergency mode')
-               
                     
             else:
                     speak("Sorry I couldn't recognize your voice. Please try again")
