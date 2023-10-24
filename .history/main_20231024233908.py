@@ -73,14 +73,14 @@ def parseBrowser():
         #speech recognition
         browser_selected = listener.recognize_google(audio).lower() # add .lower at the end 
 
-        if browser_selected in browsers__:
-            speak(f'You decided to choose {browser_selected} as the browser.')
-            print(f'selected browser accepted {browser_selected}')
-            return browser_selected
-        else:
-            speak('Browser not supported, please choose other')
-            print(f'Browser {browser_selected} not supported/recognized')
-            return None
+        while browser_selected  not in browsers__ :
+            if browser_selected in browsers__:
+                speak(f'You decided to choose {browser_selected} as the browser.')
+                print(f'selected browser accepted {browser_selected}')
+                return browser_selected
+            else:
+                speak('Browser not supported, please choose other')
+                print(f'Browser {browser_selected} not supported/recognized')            
     
     except srec.UnknownValueError:
             print('Could you please repeat')
@@ -124,14 +124,18 @@ if __name__ == '__main__':
 
                 selected_br = parseBrowser()
 
+                saved_select_br = None  #additional checker in case selected_br doesn't work
+
                 if selected_br :
                     speak('Please say "computer go to" followed by the website you want to visit to activate.')
+                    saved_select_br = selected_br
+                    
+            elif saved_select_br != None :
+                 if query[0] == 'go' and query[1]=='to':
+                     query = ' '.join(query[2:]) #we will skip the 'go to'
+                     browser_conf_open(query,saved_select_br)
 
-            elif selected_br is not None and query[0] == 'go' and query[1]=='to' :
-                query = ' '.join(query[2:]) #we will skip the 'go to'
-                browser_conf_open(query,selected_br)
-
-            elif selected_br is None:
+            elif query[0] == 'go' and query[1]=='to' and (selected_br or saved_select_br) is None:
                 speak("Please select browser first or ask for auto navigate function") 
 
                 if query[0] == 'auto' and query[1] == 'navigate' and query[2] == 'to' : #auxiliary website navigation function 
