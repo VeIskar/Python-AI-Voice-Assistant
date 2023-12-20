@@ -124,14 +124,19 @@ if __name__ == '__main__':
 
                 selected_br = parseBrowser()
 
+                saved_select_br = None  #additional checker in case selected_br doesn't work
+
                 if selected_br :
                     speak('Please say "computer go to" followed by the website you want to visit to activate.')
-
-            elif selected_br is not None and query[0] == 'go' and query[1]=='to' :
-                query = ' '.join(query[2:]) #we will skip the 'go to'
-                browser_conf_open(query,selected_br)
-
-            elif selected_br is None:
+                    saved_select_br = selected_br
+                    
+            if saved_select_br != None :                
+                if query[0] == 'go' and query[1]=='to':
+                     query = ' '.join(query[2:]) #we will skip the 'go to'
+                     browser_conf_open(query,saved_select_br)
+            
+                               
+            elif query[0] == 'go' and query[1]=='to' and ( ((selected_br == None) or (saved_select_br == None)) ):
                 speak("Please select browser first or ask for auto navigate function") 
 
                 if query[0] == 'auto' and query[1] == 'navigate' and query[2] == 'to' : #auxiliary website navigation function 
