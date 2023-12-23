@@ -144,7 +144,7 @@ if __name__ == '__main__':
                      browser_conf_open(query,saved_select_br)
             
                                
-            elif  (selected_br == None) or (saved_select_br == None):
+            elif  (selected_br == None) or (saved_select_br == None) :
                 if query[0] == 'go' and query[1]=='to':
                     speak("Please select browser first or ask for auto navigate function") 
 

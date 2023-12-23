@@ -61,8 +61,9 @@ def browser_conf_open(query_, browser):
 
 #ending program
 def exit_program(query):
-    speak("Shutting down the assistant, goodbye")
-    raise SystemExit   
+    if 'exit' in query:
+        speak("Shutting down the assistant, goodbye")
+        raise SystemExit   
 
 #browser parsing
 def parseBrowser():
@@ -94,8 +95,6 @@ def parseBrowser():
 #parser
 #main loop
 
-saved_select_br = None #the saved browser you selected
-
 if __name__ == '__main__':
     speak('Awaiting instructions')
 
@@ -120,7 +119,7 @@ if __name__ == '__main__':
 
                     speak(speech)
             
-            #empty browser for parsing
+            #empty browser
             selected_br = None
             
             #navigation
@@ -132,7 +131,7 @@ if __name__ == '__main__':
 
                 selected_br = parseBrowser()
 
-                #saved_select_br is going to be an additional checker in case selected_br doesn't work
+                saved_select_br = None  #additional checker in case selected_br doesn't work
 
                 if selected_br :
                     speak('Please say "computer go to" followed by the website you want to visit to activate.')
@@ -144,9 +143,8 @@ if __name__ == '__main__':
                      browser_conf_open(query,saved_select_br)
             
                                
-            elif  (selected_br == None) or (saved_select_br == None):
-                if query[0] == 'go' and query[1]=='to':
-                    speak("Please select browser first or ask for auto navigate function") 
+            elif query[0] == 'go' and query[1]=='to' and ( ((selected_br == None) or (saved_select_br == None)) ):
+                speak("Please select browser first or ask for auto navigate function") 
 
                 if query[0] == 'auto' and query[1] == 'navigate' and query[2] == 'to' : #auxiliary website navigation function 
                     
@@ -154,9 +152,8 @@ if __name__ == '__main__':
                     speak(f'Going to {query} in auto web mode')
                     webbrowser.open_new(query)
                     print('opening in emergency mode')
-            
-            elif 'exit' in query:
-                exit_program(query) 
                     
             else:
-                    speak("Sorry I couldn't recognize your voice. Please try again")                     
+                    speak("Sorry I couldn't recognize your voice. Please try again")
+            
+            exit_program(query)           
