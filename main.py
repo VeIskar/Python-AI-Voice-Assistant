@@ -91,6 +91,31 @@ def parseBrowser():
             print('Could you please repeat')
             return None
 
+
+#searching the wikipedia method
+def search_wikipedia(query = ''):
+    search_results = wikipedia.search(query) #array of results
+
+    if not search_results:
+        print('No result found for users query')
+        return 'No result received'
+    try:    #getting the first result from array
+        wikipedia_page = wikipedia.page([search_results[0]])
+
+    except wikipedia.DisambiguationError as error:
+        wikipedia_page = wikipedia.page(error.options[0])
+        #in case there is an Disambiguation Error and many results we take the still take the first
+
+    print(f"{wikipedia_page.title} chosen as primary query of interest")
+
+    #AI will read the summary of what the wikipedia page is about
+    page_sum = str(wikipedia_page.summary)
+    return page_sum
+
+    
+
+
+
 #parser
 #main loop
 
@@ -157,6 +182,15 @@ if __name__ == '__main__':
             
             elif 'exit' in query:
                 exit_program(query) 
+            
+
+            #using wikipedia
+            if  'wikipedia' in query:
+                query = ' '.join(query[1:])
+                speak('Querying the wikipedia ')
+                speak(search_wikipedia(query))
+                print(f'returning summary about {query}')
+
                     
             else:
                     speak("Sorry I couldn't recognize your voice. Please try again")                     
