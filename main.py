@@ -181,7 +181,9 @@ if __name__ == '__main__':
                     print('opening in emergency mode')
             
             elif 'exit' in query:
-                exit_program(query) 
+                exit_program(query)
+                print('ending the program')
+                break              
             
 
             #using wikipedia
@@ -190,6 +192,16 @@ if __name__ == '__main__':
                 speak('Querying the wikipedia ')
                 speak(search_wikipedia(query))
                 print(f'returning summary about {query}')
+
+            #taking notes
+            if query[0] == 'log':
+                print("taking notes mode")
+                speak("recording your note")
+
+                note_ = parseCommand().lower()
+                rec = datetime.now().strftime('%Y-%m-%d-%H-%M')
+                
+                
 
                     
             else:
