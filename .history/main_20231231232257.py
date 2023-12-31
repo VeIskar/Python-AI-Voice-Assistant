@@ -183,7 +183,7 @@ if __name__ == '__main__':
             if query[0] == 'exit':
                 exit_program(query)
                 print('ending the program')
-                break   #get out of loop and end without triggering else
+                break              
             
 
             #using wikipedia
@@ -205,7 +205,11 @@ if __name__ == '__main__':
                     newFile.write(note_new)
                 
                 speak('Note has been written')
-                       
+            
+            
+                
+                
+
                     
             else:
                     speak("Sorry I couldn't recognize your voice. Please try again")                     
