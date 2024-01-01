@@ -7,6 +7,7 @@ import wikipedia
 import wolframalpha
 import sys
 
+import creds
 
 
 #text to speech engine
@@ -112,7 +113,42 @@ def search_wikipedia(query = ''):
     page_sum = str(wikipedia_page.summary)
     return page_sum
 
-    
+
+#Wolfram Alpha
+wolframClient = wolframalpha.Client(creds.app_id)
+
+#wolfram result
+def dict_or_list(var):
+    if isinstance(var,list):
+        return var[0]['plaintext']
+    else:
+        return var['plaintext'] #plain dict
+
+
+
+
+def calc_wolfram_a(query = ''):
+    response = wolframClient.query(query)
+
+
+    if response['@success'] == 'false':
+        return 'Could not compute'
+
+    else:
+        result = ''
+        #question
+
+        pod_1 = response['pod'][1]
+
+        #highest confidence value - possible answer
+        #if its primary or has the title of result or def -> its official result
+        if (('result') in pod_1['@title'].lower() or (pod_1.get('primary', 'false') == 'true') or ('definition' in pod_1['@title'].lower() )):
+
+            #result may be list or dict.
+            result = dict_or_list(pod_1['subpod'])
+
+
+
 
 
 
@@ -205,7 +241,18 @@ if __name__ == '__main__':
                     newFile.write(note_new)
                 
                 speak('Note has been written')
-                       
+            
+            # calculations/Wolfram commands
+            if query[0] == 'calculate':
+                query = ' '.join(query[1:])
+                speak('Computing')
+                try:
+                    result = calc_wolfram_a(query)
+                    speak(result)
+                    print('wolfram alpha used for calculation')
+                except:
+                    speak('Unable to compute')
+                    print('computing failed')
                     
             else:
                     speak("Sorry I couldn't recognize your voice. Please try again")                     
