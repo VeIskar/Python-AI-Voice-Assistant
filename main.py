@@ -138,6 +138,7 @@ def calc_wolfram_a(query = ''):
         result = ''
         #question
 
+        pod_0 = response['pod'][0]
         pod_1 = response['pod'][1]
 
         #highest confidence value - possible answer
@@ -146,6 +147,21 @@ def calc_wolfram_a(query = ''):
 
             #result may be list or dict.
             result = dict_or_list(pod_1['subpod'])
+            print("query result: ",result)
+
+            #removing bracket section
+            return result.split('(')[0]
+        else:
+            #get answer from pod 0
+            question = dict_or_list(pod_0['subpod'])
+            
+            return question.split('(')[0]
+
+            #searching wikipedia instead
+
+            speak('Unable to compute, querying wikipedia')
+            print("computation failure")
+            return search_wikipedia(question)
 
 
 
