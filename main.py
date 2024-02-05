@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 import speech_recognition as srec
 import pyttsx3
 import webbrowser
@@ -186,11 +186,17 @@ if __name__ == '__main__':
 
             #commands
             if query[0] == 'say':
-
                 if 'hello' in query:
                     speak('Greetings everyone.')
                     print('greeitngs sequence')
                     continue
+                elif 'current date' in query:
+                    td=date.today()
+                    formated_td = td.strftime('%B %d, %Y')   
+                                    
+                    speak(formated_td)
+                    print(f'current date: {formated_td}')
+
                 else:
                     query.pop(0) #remove say
                     speech =' '.join(query)
