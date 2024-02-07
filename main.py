@@ -6,6 +6,7 @@ import browsers
 import wikipedia
 import wolframalpha
 import sys
+import requests
 
 import creds
 
@@ -115,7 +116,29 @@ def search_wikipedia(query = ''):
 
 
 #Wolfram Alpha
-wolframClient = wolframalpha.Client(creds.app_id)
+wolframClient = wolframalpha.Client(creds.app_id_wolfram)
+
+#Weather api
+weather_key = creds.app_id_weather
+
+
+def weather_func(query = ''):
+    w_req = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={query}&units=metric&APPID={weather_key}") #add selection metric/imperial 
+    #uses requests lib to fetch the url
+
+    if w_req.json()['cod'] == '404':
+        speak("No city found")
+    else:
+        #data which we want to retrive:
+        weather_data = w_req.json()['weather'][0]['description']
+        temp_data = round(w_req.json()['main']['temp'])
+
+        speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
+
+        print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
+        
+        #"ºF ºC"
+
 
 #wolfram result
 def dict_or_list(var):
@@ -243,6 +266,11 @@ if __name__ == '__main__':
                 print('ending the program')
                 break   #get out of loop and end without triggering else
             
+            if query[0] == 'check' and query[1] == 'weather':
+                speak('From which city would you like to get the information about the weather?')
+                query = ' '.join(query[2:])
+                speak(weather_func(query))
+
 
             #using wikipedia
             if 'wikipedia' in query:
