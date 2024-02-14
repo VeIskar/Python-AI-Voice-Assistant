@@ -122,8 +122,8 @@ wolframClient = wolframalpha.Client(creds.app_id_wolfram)
 weather_key = creds.app_id_weather
 
 
-def weather_func(query = ''):
-    w_req = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={query}&units=metric&APPID={weather_key}") #add selection metric/imperial 
+def weather_func(query = '', query_sys = ''):
+    w_req = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={query}&units={query_sys}&APPID={weather_key}")  
     #uses requests lib to fetch the url
 
     if w_req.json()['cod'] == '404':
@@ -133,11 +133,20 @@ def weather_func(query = ''):
         weather_data = w_req.json()['weather'][0]['description']
         temp_data = round(w_req.json()['main']['temp'])
 
-        speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
+        #humidity = w_req.json()['main']['humidity'] add humidity
 
-        print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
+        if query_sys == 'metric':
+            speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
+            print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
         
-        #"ºF ºC"
+        elif query_sys == 'imperial':
+            speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºF")
+            print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in imperial units")
+
+        #to test
+        else:
+            speak('unknown measurement system')
+            print('auxiliary measurement system error: unknownsystem')
 
 
 #wolfram result
@@ -269,7 +278,12 @@ if __name__ == '__main__':
             if query[0] == 'check' and query[1] == 'weather':
                 speak('From which city would you like to get the information about the weather?')
                 query = ' '.join(query[2:])
-                speak(weather_func(query))
+                
+                #measurement system
+                speak('Which measurement system do you prefer? Available are metric and imperial')
+                query_sys = parseCommand().lower()
+
+                speak(weather_func(query,query_sys))
 
 
             #using wikipedia
