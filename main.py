@@ -122,31 +122,38 @@ wolframClient = wolframalpha.Client(creds.app_id_wolfram)
 weather_key = creds.app_id_weather
 
 
-def weather_func(query = '', query_sys = ''):
-    w_req = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={query}&units={query_sys}&APPID={weather_key}")  
+def weather_func(query = '', query_mes_sys = ''):
+    w_req = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={query}&units={query_mes_sys}&APPID={weather_key}")  
     #uses requests lib to fetch the url
 
-    if w_req.json()['cod'] == '404':
-        speak("No city found")
-    else:
-        #data which we want to retrive:
-        weather_data = w_req.json()['weather'][0]['description']
-        temp_data = round(w_req.json()['main']['temp'])
-
-        #humidity = w_req.json()['main']['humidity'] add humidity
-
-        if query_sys == 'metric':
-            speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
-            print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
-        
-        elif query_sys == 'imperial':
-            speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºF")
-            print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in imperial units")
-
-        #to test
+    try:
+        if w_req.json()['cod'] == '404':
+            speak("No city found")
         else:
-            speak('unknown measurement system')
-            print('auxiliary measurement system error: unknownsystem')
+            #data which we want to retrive:
+            weather_data = w_req.json()['weather'][0]['description']
+            temp_data = round(w_req.json()['main']['temp'])
+
+            #add humidity option -> humid_ = w_req.json()['main']['humidity']
+
+            if query_mes_sys == 'metric':
+                speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
+                print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
+            
+            elif query_mes_sys == 'imperial':
+                speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºF")
+                print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in imperial units")
+
+            #to test
+            else:
+                speak('unknown measurement system')
+                print('auxiliary measurement system error: unknownsystem')
+    
+    #API errors
+    except:
+        speak(f"An error occured while fetching weather data: {e}")
+        print(f"Error while fetching weather data: {e}")
+
 
 
 #wolfram result
@@ -222,12 +229,6 @@ if __name__ == '__main__':
                     speak('Greetings everyone.')
                     print('greeitngs sequence')
                     continue
-                elif 'current date' in query:
-                    td=date.today()
-                    formated_td = td.strftime('%B %d, %Y')   
-                                    
-                    speak(formated_td)
-                    print(f'current date: {formated_td}')
 
                 else:
                     query.pop(0) #remove say
@@ -275,15 +276,24 @@ if __name__ == '__main__':
                 print('ending the program')
                 break   #get out of loop and end without triggering else
             
-            if query[0] == 'check' and query[1] == 'weather':
-                speak('From which city would you like to get the information about the weather?')
-                query = ' '.join(query[2:])
-                
-                #measurement system
-                speak('Which measurement system do you prefer? Available are metric and imperial')
-                query_sys = parseCommand().lower()
+            if query[0] == 'check':
 
-                speak(weather_func(query,query_sys))
+                if query[1] == 'weather':
+                    speak('From which city would you like to get the information about the weather?')
+                    query = ' '.join(query[2:])
+                    
+                    #measurement system
+                    speak('Which measurement system do you prefer? Available are metric and imperial')
+                    query_mes_sys = parseCommand().lower()
+
+                    speak(weather_func(query,query_mes_sys))
+                
+                elif 'current date' in query:
+                    td=date.today()
+                    formated_td = td.strftime('%B %d, %Y')   
+                                    
+                    speak(formated_td)
+                    print(f'current date: {formated_td}')
 
 
             #using wikipedia
