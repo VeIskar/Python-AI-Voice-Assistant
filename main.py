@@ -150,9 +150,9 @@ def weather_func(query = '', query_mes_sys = ''):
                 print('auxiliary measurement system error: unknownsystem')
     
     #API errors
-    except:
-        speak(f"An error occured while fetching weather data: {e}")
-        print(f"Error while fetching weather data: {e}")
+    except requests.RequestException as req_exp:
+        speak("An error occured while fetching weather data")
+        print(f"Error while fetching weather data: {req_exp}")
 
 
 
@@ -169,38 +169,42 @@ def dict_or_list(var):
 def calc_wolfram_a(query = ''):
     response = wolframClient.query(query)
 
+    try:
+        if response['@success'] == 'false':
+            return 'Could not compute'
 
-    if response['@success'] == 'false':
-        return 'Could not compute'
-
-    else:
-        result = ''
-        #question
-
-        pod_0 = response['pod'][0]
-        pod_1 = response['pod'][1]
-
-        #highest confidence value - possible answer
-        #if its primary or has the title of result or def -> its official result
-        if (('result') in pod_1['@title'].lower() or (pod_1.get('primary', 'false') == 'true') or ('definition' in pod_1['@title'].lower() )):
-
-            #result may be list or dict.
-            result = dict_or_list(pod_1['subpod'])
-            print("query result: ",result)
-
-            #removing bracket section
-            return result.split('(')[0]
         else:
-            #get answer from pod 0
-            question = dict_or_list(pod_0['subpod'])
-            
-            return question.split('(')[0]
+            result = ''
+            #question
 
-            #searching wikipedia instead
+            pod_0 = response['pod'][0]
+            pod_1 = response['pod'][1]
 
-            speak('Unable to compute, querying wikipedia')
-            print("computation failure")
-            return search_wikipedia(question)
+            #highest confidence value - possible answer
+            #if its primary or has the title of result or def -> its official result
+            if (('result') in pod_1['@title'].lower() or (pod_1.get('primary', 'false') == 'true') or ('definition' in pod_1['@title'].lower() )):
+
+                #result may be list or dict.
+                result = dict_or_list(pod_1['subpod'])
+                print("query result: ",result)
+
+                #removing bracket section
+                return result.split('(')[0]
+            else:
+                #get answer from pod 0
+                question = dict_or_list(pod_0['subpod'])
+                
+                return question.split('(')[0]
+
+                #searching wikipedia instead
+
+                speak('Unable to compute, querying wikipedia')
+                print("computation failure")
+                return search_wikipedia(question)
+    #API key error
+    except KeyError as wolf_key_e:
+        speak(f"Error occurring with Wolfram Alpha api key")
+        print(f"Error occurring with Wolfram Alpha api key: {wolf_key_e}")
 
 
 
