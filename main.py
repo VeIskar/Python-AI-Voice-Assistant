@@ -122,27 +122,44 @@ wolframClient = wolframalpha.Client(creds.app_id_wolfram)
 weather_key = creds.app_id_weather
 
 
-def weather_func(query = '', query_mes_sys = ''):
+def weather_func(query = '', query_mes_sys = '', query_ext = ''):
     w_req = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={query}&units={query_mes_sys}&APPID={weather_key}")  
     #uses requests lib to fetch the url
+    td = datetime
 
     try:
         if w_req.json()['cod'] == '404':
             speak("No city found")
+            print("no city found")
         else:
-            #data which we want to retrive:
+            #base data which we want to retrive:
             weather_data = w_req.json()['weather'][0]['description']
             temp_data = round(w_req.json()['main']['temp'])
 
-            #add humidity option -> humid_ = w_req.json()['main']['humidity']
 
+            #extended data:
+            humidity = w_req.json()['main']['humidity']
+            feels_like = w_req.json()['main']['feels_like']
+            sunrise = td.datetime.utcfromtimestamp(w_req.json()['sys']['sunrise']).strftime('%H:%M')
+            sunset = td.datetime.utcfromtimestamp(w_req.json()['sys']['sunset']).strftime('%H:%M')
+            windspeed = w_req.json()['wind']['speed']
+
+            #formated_td = td.strftime('%B %d, %Y')
             if query_mes_sys == 'metric':
                 speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
                 print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
+
+                if query_ext == 'yes':
+                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity}, w
+                          indspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
             
             elif query_mes_sys == 'imperial':
                 speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºF")
                 print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in imperial units")
+
+                if query_ext == 'yes':
+                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity}, 
+                          windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
 
             #to test
             else:
@@ -153,7 +170,7 @@ def weather_func(query = '', query_mes_sys = ''):
     except requests.RequestException as req_exp:
         speak("An error occured while fetching weather data")
         print(f"Error while fetching weather data: {req_exp}")
-
+   
 
 
 #wolfram result
@@ -260,8 +277,8 @@ if __name__ == '__main__':
                     
             if saved_select_br != None :                
                 if query[0] == 'go' and query[1]=='to':
-                     query = ' '.join(query[2:]) #we will skip the 'go to'
-                     browser_conf_open(query,saved_select_br)
+                    query = ' '.join(query[2:]) #we will skip the 'go to'
+                    browser_conf_open(query,saved_select_br)
             
                                
             elif  (selected_br == None) or (saved_select_br == None):
@@ -290,7 +307,11 @@ if __name__ == '__main__':
                     speak('Which measurement system do you prefer? Available are metric and imperial')
                     query_mes_sys = parseCommand().lower()
 
-                    speak(weather_func(query,query_mes_sys))
+                    #extended info
+                    speak('Would you like extended information about the weather?')
+                    query_ext = parseCommand().lower()
+
+                    speak(weather_func(query,query_mes_sys,query_ext))
                 
                 elif 'current date' in query:
                     td=date.today()
