@@ -18,7 +18,7 @@ engine_srec.setProperty('voice', voices[1].id) #[1] female [0] male
 trigger_phrase = 'computer' #word to activate assistant
 
 #browsers
-browsers__=['chrome', 'firefox','edge']
+browsers_list=['chrome', 'firefox','edge']
 
 
 def speak(text, rate=120):  
@@ -80,7 +80,7 @@ def parseBrowser():
         #speech recognition
         browser_selected = listener.recognize_google(audio).lower() # add .lower at the end 
 
-        if browser_selected in browsers__:
+        if browser_selected in browsers_list:
             speak(f'You decided to choose {browser_selected} as the browser.')
             print(f'selected browser accepted {browser_selected}')
             return browser_selected
@@ -150,8 +150,12 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
                 print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
 
                 if query_ext == 'yes':
-                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity}, w
-                          indspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
+                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity}, 
+                          windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
+                    
+                    print(f'{query} feels like: {feels_like} Humidity: {humidity}, 
+                          windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
+                    
             
             elif query_mes_sys == 'imperial':
                 speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºF")
@@ -160,6 +164,9 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
                 if query_ext == 'yes':
                     speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity}, 
                           windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
+                    
+                    print(f'{query} feels like: {feels_like} Humidity: {humidity}, 
+                          windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
 
             #to test
             else:
@@ -265,7 +272,7 @@ if __name__ == '__main__':
                 
                 #speak('Opening: ') prev
                                 
-                speak("In which browser you would like to open? Available browsers are: " + ', '.join(browsers__))
+                speak("In which browser you would like to open? Available browsers are: " + ', '.join(browsers_list))
 
                 selected_br = parseBrowser()
 
@@ -308,7 +315,7 @@ if __name__ == '__main__':
                     query_mes_sys = parseCommand().lower()
 
                     #extended info
-                    speak('Would you like extended information about the weather?')
+                    speak('Would you like extended information about the weather? Proceed with yes or no')
                     query_ext = parseCommand().lower()
 
                     speak(weather_func(query,query_mes_sys,query_ext))
