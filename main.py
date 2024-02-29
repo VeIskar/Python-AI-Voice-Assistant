@@ -179,6 +179,42 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
         print(f"Error while fetching weather data: {req_exp}")
    
 
+#todolist
+def to_do_list(query=''):
+    #implementation prop. 1: to do list will react according to query said by user
+
+    list_of_items = []
+
+    if query == 'list':
+        if list_of_items is not None:
+            speak("Current tasks are:")
+            print("current tasks in list:")
+            for i, item in enumerate(list_of_items,start=1):
+                speak(i, item)
+                print(i, item)
+        else:
+            speak("List is empty")
+            print("List is empty")
+    
+    if ("add task") in query:
+        query = ' '.join(query[2:])
+        list_of_items.append(query)
+
+        speak("Task added")
+        print(f"added task{query}")
+    
+    if ("remove task") in query:
+        query = ' '.join(query[2:])
+
+        for item in list_of_items:
+            if item == query:
+                list_of_items.remove(item)
+        
+        speak("Task removed")
+        print(f"removed task{query}")
+    
+
+
 
 #wolfram result
 def dict_or_list(var):
