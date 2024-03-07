@@ -150,11 +150,10 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
                 print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
 
                 if query_ext == 'yes':
-                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity}, 
-                          windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
+                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity},'+ 
+                          f'windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
                     
-                    print(f'{query} feels like: {feels_like} Humidity: {humidity}, 
-                          windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
+                    print(f'{query} feels like: {feels_like} Humidity: {humidity}, windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
                     
             
             elif query_mes_sys == 'imperial':
@@ -162,11 +161,10 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
                 print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in imperial units")
 
                 if query_ext == 'yes':
-                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity}, 
-                          windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
+                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity},'+ 
+                          f'windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
                     
-                    print(f'{query} feels like: {feels_like} Humidity: {humidity}, 
-                          windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
+                    print(f'{query} feels like: {feels_like} Humidity: {humidity}, windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
 
             #to test
             else:
@@ -180,41 +178,52 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
    
 
 #todolist
+#implementation prop. 2: add separate functions for specified tasks for better modularity
 def to_do_list(query=''):
-    #implementation prop. 1: to do list will react according to query said by user
 
     list_of_items = []
 
-    if query == 'list':
-        if list_of_items is not None:
-            speak("Current tasks are:")
-            print("current tasks in list:")
-            for i, item in enumerate(list_of_items,start=1):
-                speak(i, item)
-                print(i, item)
-        else:
-            speak("List is empty")
-            print("List is empty")
+    if 'check' in query:
+        list_tasks(list_of_items)
     
-    if ("add task") in query:
-        query = ' '.join(query[2:])
-        list_of_items.append(query)
-
-        speak("Task added")
-        print(f"added task{query}")
-    
-    if ("remove task") in query:
-        query = ' '.join(query[2:])
-
-        for item in list_of_items:
-            if item == query:
-                list_of_items.remove(item)
+    if 'add' in query:
+        add_task(query,list_of_items)
+        speak(f"Adding {query[1:]} to the list")
         
-        speak("Task removed")
-        print(f"removed task{query}")
+    if ("remove") in query:
+        remove_task(query,list_of_items)
+        speak(f"Removing {query[1:]} from list")
     
 
+#listing the content of the list
+def list_tasks(list_of_items):
+    if list_of_items:
+        speak("Current tasks are:")
+        print("current tasks in list:")
+        for i, item in enumerate(list_of_items, start=1):
+            speak(f"{i} {item}")
+            print(i, item)
+    else:
+        speak("List is empty")
+        print("List is empty")
 
+#add new task to the list
+def add_task(query,list_of_items):
+    task=' '.join(query[1:])
+    list_of_items.append(task)
+    print(f"added task: {task}")
+
+#removing task from the list
+def remove_task(query,list_of_items):
+    task = ' '.join(query[1:])
+
+    for item in list_of_items:
+        if item == task:
+            list_of_items.remove(task)
+            print(f"removed task {query}")
+            break
+    else:
+        print("Task doesnt exist")
 
 #wolfram result
 def dict_or_list(var):
@@ -355,18 +364,34 @@ if __name__ == '__main__':
                     query_ext = parseCommand().lower()
 
                     speak(weather_func(query,query_mes_sys,query_ext))
-                
-                elif 'current date' in query:
+                           
+                if 'current date' in query:
                     td=date.today()
                     formated_td = td.strftime('%B %d, %Y')   
                                     
                     speak(formated_td)
                     print(f'current date: {formated_td}')
+                    continue
 
+                    #listing items of to do list
+                if query[1] in ['checklist', 'list', 'tasks', 'todo', "to do's ", 'chores', 'assignments']:
+                    speak(to_do_list(query))
+                    print("todo list checking")  
+                    continue  
+            
+            #adding new task to do list
+            if query[0] == 'add':
+                speak(to_do_list(query))
+                continue
+            
+            #removing task from to do list
+            if query[0] == 'remove':
+                speak(to_do_list(query))
+                continue
 
             #using wikipedia
             if 'wikipedia' in query:
-                query = ' '.join(query[1:])
+                query = ' '.join(query)
                 speak('Querying the wikipedia ')
                 speak(search_wikipedia(query))
                 print(f'returning summary about {query}')
