@@ -129,8 +129,8 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
 
     try:
         if w_req.json()['cod'] == '404':
-            speak("No city found")
             print("no city found")
+            return "No city found"  
         else:
             #base data which we want to retrive:
             weather_data = w_req.json()['weather'][0]['description']
@@ -173,39 +173,41 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
     
     #API errors
     except requests.RequestException as req_exp:
-        speak("An error occured while fetching weather data")
         print(f"Error while fetching weather data: {req_exp}")
+        return "An error occured while fetching weather data"       
    
 
 #todolist
 #implementation prop. 2: add separate functions for specified tasks for better modularity
+list_of_items = []
 def to_do_list(query=''):
 
-    list_of_items = []
+    global list_of_items
 
     if 'check' in query:
-        list_tasks(list_of_items)
+        return list_tasks(list_of_items)
     
     if 'add' in query:
         add_task(query,list_of_items)
-        speak(f"Adding {query[1:]} to the list")
+        return(f"Adding {query[1:]} to the list")
         
     if ("remove") in query:
         remove_task(query,list_of_items)
-        speak(f"Removing {query[1:]} from list")
+        return (f"Removing {query[1:]} from list")
     
 
 #listing the content of the list
 def list_tasks(list_of_items):
     if list_of_items:
-        speak("Current tasks are:")
         print("current tasks in list:")
         for i, item in enumerate(list_of_items, start=1):
-            speak(f"{i} {item}")
             print(i, item)
+            speak (f"{i} {item}")
+        return "Those are the current tasks"
     else:
-        speak("List is empty")
         print("List is empty")
+        return "List is empty"
+        
 
 #add new task to the list
 def add_task(query,list_of_items):
@@ -222,8 +224,10 @@ def remove_task(query,list_of_items):
             list_of_items.remove(task)
             print(f"removed task {query}")
             break
+        return "task removed"
     else:
         print("Task doesnt exist")
+        return "Task doesnt exist"  
 
 #wolfram result
 def dict_or_list(var):
@@ -384,7 +388,7 @@ if __name__ == '__main__':
                 speak(to_do_list(query))
                 continue
             
-            #removing task from to do list
+            #removing task from to do list 
             if query[0] == 'remove':
                 speak(to_do_list(query))
                 continue
