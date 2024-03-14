@@ -122,7 +122,24 @@ wolframClient = wolframalpha.Client(creds.app_id_wolfram)
 weather_key = creds.app_id_weather
 
 
+#add different func for checking query_mes_sys and extended info about weather
+def temp_sys(query_mes_sys = ''):
+    if query_mes_sys == 'metric':
+        print("metric system chosen")
+        return 'metric'
+    elif query_mes_sys == 'imperial':
+        print("imperial system chosen")
+        return 'imperial'
+    else:
+        print("unknown system")
+        return 'error'
+
+
 def weather_func(query = '', query_mes_sys = '', query_ext = ''):
+    if query_mes_sys == 'error':
+        print('auxiliary measurement system error: unknownsystem')
+        return 'unknown measurement system'
+
     w_req = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={query}&units={query_mes_sys}&APPID={weather_key}")  
     #uses requests lib to fetch the url
     td = datetime
@@ -145,31 +162,38 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
             windspeed = w_req.json()['wind']['speed']
 
             #formated_td = td.strftime('%B %d, %Y')
-            if query_mes_sys == 'metric':
-                speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
-                print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
 
-                if query_ext == 'yes':
+            if query_ext == 'yes':
+
+                if query_mes_sys == 'metric':
+                    speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
+                    #ext info
                     speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity},'+ 
-                          f'windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
+                            f'windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
                     
+                    print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
+                    #ext info
                     print(f'{query} feels like: {feels_like} Humidity: {humidity}, windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
+                        
+                
+                if query_mes_sys == 'imperial':
+                    speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºF")
+                    #ext info
+                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity},'+ 
+                            f'windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
                     
+                    print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºF in imperial units")
+                    #ext info
+                    print(f'{query} feels like: {feels_like} Humidity: {humidity}, windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
             
-            elif query_mes_sys == 'imperial':
-                speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºF")
-                print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in imperial units")
-
-                if query_ext == 'yes':
-                    speak(f'The temperature in {query} feels like {feels_like} Humidity is {humidity},'+ 
-                          f'windspeed is {windspeed}, sunrise begins at: {sunrise} and sunset at: {sunset} ')
-                    
-                    print(f'{query} feels like: {feels_like} Humidity: {humidity}, windspeed: {windspeed}, sunrise: {sunrise} sunset: {sunset} ')
-
-            #to test
             else:
-                speak('unknown measurement system')
-                print('auxiliary measurement system error: unknownsystem')
+                if query_mes_sys == 'metric':
+                    speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºC")
+                    print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºC in metric units")
+                if query_mes_sys == 'imperial':
+                    speak(f"The weather in {query} is {weather_data} and the temperature is {temp_data}ºF")
+                    print(f"Chosen city: {query}, weather: {weather_data}, temperature{temp_data}ºF in imperial units")
+                
     
     #API errors
     except requests.RequestException as req_exp:
@@ -356,18 +380,19 @@ if __name__ == '__main__':
             if query[0] == 'check':
 
                 if query[1] == 'weather':
-                    speak('From which city would you like to get the information about the weather?')
-                    query = ' '.join(query[2:])
-                    
                     #measurement system
                     speak('Which measurement system do you prefer? Available are metric and imperial')
                     query_mes_sys = parseCommand().lower()
+                    t_sys = temp_sys(query_mes_sys)
 
                     #extended info
                     speak('Would you like extended information about the weather? Proceed with yes or no')
                     query_ext = parseCommand().lower()
 
-                    speak(weather_func(query,query_mes_sys,query_ext))
+                    speak('From which city would you like to get the information about the weather?')
+                    query = ' '.join(query[2:])
+
+                    speak(weather_func(query,t_sys,query_ext))
                            
                 if 'current date' in query:
                     td=date.today()
