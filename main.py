@@ -8,7 +8,7 @@ import wolframalpha
 import sys
 import requests
 
-import creds
+import creds #API keys
 
 
 #text to speech engine
@@ -137,7 +137,7 @@ def temp_sys(query_mes_sys = ''):
 
 def weather_func(query = '', query_mes_sys = '', query_ext = ''):
     if query_mes_sys == 'error':
-        print('auxiliary measurement system error: unknownsystem')
+        print('measurement system error: unknown system')
         return 'unknown measurement system'
 
     w_req = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={query}&units={query_mes_sys}&APPID={weather_key}")  
@@ -198,8 +198,14 @@ def weather_func(query = '', query_mes_sys = '', query_ext = ''):
     #API errors
     except requests.RequestException as req_exp:
         print(f"Error while fetching weather data: {req_exp}")
-        return "An error occured while fetching weather data"       
-   
+        return "An error occured while fetching weather data"
+    except KeyError as key_error:
+        print(f"KeyError in weather response: {key_error}")
+        return "Error processing weather data or API key"
+    except Exception as e:
+        print(f"unexpected/unknown error occurrence: {e}")
+        return "An unexpected error occurred"
+    
 
 #todolist
 #implementation prop. 2: add separate functions for specified tasks for better modularity
@@ -302,6 +308,9 @@ def calc_wolfram_a(query = ''):
     except KeyError as wolf_key_e:
         speak(f"Error occurring with Wolfram Alpha api key")
         print(f"Error occurring with Wolfram Alpha api key: {wolf_key_e}")
+    except Exception as e:
+        print(f"unexpected/unknown error occurrence: {e}")
+        return "An unexpected error occurred"
 
 
 
@@ -370,12 +379,7 @@ if __name__ == '__main__':
                     query = ' '.join(query[3:])
                     speak(f'Going to {query} in auto web mode')
                     webbrowser.open_new(query)
-                    print('opening in emergency mode')
-            
-            if query[0] == 'exit':
-                exit_program(query)
-                print('ending the program')
-                break   #get out of loop and end without triggering else
+                    print('opening in emergency mode')           
             
             if query[0] == 'check':
 
@@ -393,6 +397,7 @@ if __name__ == '__main__':
                     query = ' '.join(query[2:])
 
                     speak(weather_func(query,t_sys,query_ext))
+                    continue
                            
                 if 'current date' in query:
                     td=date.today()
@@ -449,6 +454,11 @@ if __name__ == '__main__':
                 except:
                     speak('Unable to compute')
                     print('computing failed')
+            
+            if query[0] == 'exit':
+                exit_program(query)
+                print('ending the program')
+                break   #get out of loop and end without triggering else
                     
             else:
                     speak("Sorry I couldn't recognize your voice. Please try again")                     
