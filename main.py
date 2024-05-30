@@ -1,4 +1,5 @@
-from datetime import datetime, date
+import datetime
+from datetime import date
 import speech_recognition as srec
 import pyttsx3
 import webbrowser
@@ -7,9 +8,8 @@ import wikipedia
 import wolframalpha
 import sys
 import requests
-
-import creds #API keys
-
+#API keys
+import creds
 
 #text to speech engine
 engine_srec = pyttsx3.init()
@@ -314,13 +314,9 @@ def calc_wolfram_a(query = ''):
 
 
 
-
-
-
 #parser
 #main loop
-
-saved_select_br = None #the saved browser you selected
+saved_select_br = None #the saved browser selected by user
 
 if __name__ == '__main__':
     speak('Awaiting instructions')
@@ -351,8 +347,6 @@ if __name__ == '__main__':
             
             #navigation
             if query[0]=='select' and query[1]=='browser':     
-                
-                #speak('Opening: ') prev
                                 
                 speak("In which browser you would like to open? Available browsers are: " + ', '.join(browsers_list))
 
@@ -461,4 +455,4 @@ if __name__ == '__main__':
                 break   #get out of loop and end without triggering else
                     
             else:
-                    speak("Sorry I couldn't recognize your voice. Please try again")                     
+                    speak("Sorry I couldn't recognize your voice. Please try again")
