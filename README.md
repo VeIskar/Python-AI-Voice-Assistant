@@ -4,20 +4,14 @@ This Python AI Assistant project is designed to perform various tasks based on v
 
 ### Features
 1. Voice Commands: The assistant responds to voice commands prefixed with the trigger phrase "computer".
-
-2. Web Navigation: Users can instruct the assistant to open specified websites in selected browsers, or allow it to automatically open links in the default web browser.
-
+2. Web Navigation: User can instruct the assistant to open specified websites in selected browsers, or allow it to automatically open links in the default web browser.
 3. Weather Information: By specifying a city and preferred measurement system (metric or imperial), the assistant fetches current weather data from the OpenWeatherMap API. It can also provide extended weather information upon request.
-
-4. Date and Time: Users can ask for the current date.
-
+4. Date and Time: User can ask for the current date.
 5. To-Do List Management: The assistant allows users to add, remove, and view tasks in their to-do list.
-
-6. Wikipedia Search: Users can ask the assistant to search for information on Wikipedia.
-
+6. Wikipedia Search: User can ask the assistant to search for information on Wikipedia.
 7. Note-taking: The assistant can record and save notes provided by the user.
-
-8. Calculations: Users can ask the assistant to perform calculations using Wolfram Alpha's computational engine.
+8. Calculations: User can ask the assistant to perform calculations using Wolfram Alpha's computational engine.
+9. GUI (Feauture in progress): The assistant can appear in a separate GUI window whenever started (currently in testing in other-features branch)
 
 
 ### Requirements
@@ -27,7 +21,11 @@ This Python AI Assistant project is designed to perform various tasks based on v
 
 ### Setup
 
-1. Install Dependencies and Pyaudio wheel
+1. Install Dependencies and Pyaudio wheel file (add Pyaudio file to your project path)
+```bash
+pip install pyaudio
+pip install .\PyAudio-0.2.13-cp310-cp310-win_amd64.whl
+```
 2. Add your API Keys to creds.py
 3. Run the Program:
 ```bash
@@ -37,6 +35,6 @@ python voice_assistant.py
 
 
 **Future features**
-- GUI
+- Update and change GUI for main branch
 - More complex to do list
 - more functions
