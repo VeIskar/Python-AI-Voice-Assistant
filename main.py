@@ -10,6 +10,10 @@ import sys
 import requests
 #API keys
 import creds
+#GUI
+from GUI import AI_GUI
+import threading
+import tkinter as tk
 
 #text to speech engine
 engine_srec = pyttsx3.init()
@@ -319,6 +323,11 @@ def calc_wolfram_a(query = ''):
 saved_select_br = None #the saved browser selected by user
 
 if __name__ == '__main__':
+
+    root = tk.Tk()
+    gui = AI_GUI(root, parseCommand, speak, trigger_phrase)
+    root.mainloop()
+    
     speak('Awaiting instructions')
 
     #commands listening loop
