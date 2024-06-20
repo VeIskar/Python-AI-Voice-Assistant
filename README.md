@@ -16,6 +16,7 @@ This Python AI Assistant project is designed to perform various tasks based on v
 
 ### Requirements
 - Pyaudio wheel matching your Python version (the project was made on Python 3.10) I recommend 3.8+
+(If you're struggling to find the PyAudio wheel file matching your python version you can try getting it from this web archive site: https://web.archive.org/web/20230901035327/https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio the original site)
 - API keys for wolframalpha and openweather
 - Libraries: speech_recognition, pyttsx3, webbrowser, wikipedia, wolframalpha, requests
 
